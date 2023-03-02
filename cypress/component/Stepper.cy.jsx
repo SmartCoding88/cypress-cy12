@@ -18,10 +18,29 @@ describe('<Stepper>', () => {
   it('Supports an "initial" prop to set the value',()=>{
     //Arrange
     cy.mount(<Stepper initial={100} />);
+    //Action
     cy.get(stepperSelector).should("contain.text",100);
-  })
+    
+  });
+
+  //test a button click
+  it("Can be incremented",()=>{
+    cy.mount(<Stepper />);
+    cy.get(incrementSelector).click();
+    //Assert
+    cy.get(stepperSelector).should("contain.text",1)
+  });
+
+  it("Can be decremented",()=>{
+    cy.mount(<Stepper />);
+    cy.get(decrementSelector).click();
+    //Assert
+    cy.get(stepperSelector).should("contain.text",-1)
+  });
+
   it('mounts', () => {
      cy.mount(<Stepper />);
      
-  })
+  });
+
 })
