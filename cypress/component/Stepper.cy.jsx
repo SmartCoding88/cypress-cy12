@@ -5,7 +5,12 @@ describe('<Stepper>', () => {
   //Set initial declarations
   const stepperSelector = "[data-testid=stepper]";
   const incrementSelector = "[aria-label=increment]";
-  const decrementSelector = "[aria-label=decrement]";
+  const decrementSelector = "[aria-label=decrement]"; 
+  
+  it('Mounts', () => {
+     cy.mount(<Stepper />);
+     
+  });
   //test initial =0
   it("Stepper should default to 0", ()=>{
 
@@ -38,9 +43,39 @@ describe('<Stepper>', () => {
     cy.get(stepperSelector).should("contain.text",-1)
   });
 
-  it('mounts', () => {
-     cy.mount(<Stepper />);
-     
-  });
+ //more general use cases
+ it("Has an initial counter that can be incremented and decremented",()=>{
+
+  cy.mount(<Stepper initial={100} />);
+  cy.get(stepperSelector).should("contain.text",100);
+  cy.get(incrementSelector).click();
+  cy.get(stepperSelector).should("contain.text",101);
+  cy.get(decrementSelector).click().click();
+  cy.get(stepperSelector).should("contain.text",99)
+
+ });
+
+ //Spy
+ it("Fire a Change event with the increment value by click", ()=>{
+  //Arrange
+  const onChangeSpy = cy.spy().as("onChangeSpy");
+  cy.mount(<Stepper onChange={onChangeSpy} />);
+
+  //Action
+  cy.get(incrementSelector).click();
+  //Assert
+  cy.get("@onChangeSpy").should("have.been.calledOnceWith", 1);
+ });
+
+ it("Fire a Change event with the decrement value by click", ()=>{
+  //Arrange
+  const onChangeSpy = cy.spy().as("onChangeSpy");
+  cy.mount(<Stepper onChange={onChangeSpy} />);
+
+  //Action
+  cy.get(decrementSelector).click();
+  //Assert
+  cy.get("@onChangeSpy").should("have.been.calledOnceWith", -1);
+ })
 
 })
